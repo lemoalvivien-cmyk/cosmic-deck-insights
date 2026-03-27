@@ -72,7 +72,9 @@ export function MaintenanceGuard({ children }: MaintenanceGuardProps) {
     navigate('/status', { replace: true });
   }, [publicConfig, configLoading, authLoading, checkingAdmin, isAdmin, location.pathname, navigate]);
 
-  if (configLoading || authLoading || (user && checkingAdmin)) {
+  // Only block on auth loading — never block the entire app on config fetch
+  // If config is unavailable, safe defaults (no maintenance) are used
+  if (authLoading || (user && checkingAdmin)) {
     return <LoadingScreen />;
   }
 
