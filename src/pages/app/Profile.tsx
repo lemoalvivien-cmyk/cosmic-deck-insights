@@ -129,28 +129,36 @@ export default function Profile() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!user) return;
+    if (!user || !session?.access_token) return;
     
     setDeleting(true);
     try {
-      // Delete readings first (cascade should handle this, but being explicit)
-      await supabase.from('tarot_readings').delete().eq('user_id', user.id);
-      await supabase.from('profiles').delete().eq('id', user.id);
-      await supabase.from('user_roles').delete().eq('user_id', user.id);
-      
-      // Sign out - need to import signOut from useAuth
+      const response = await supabase.functions.invoke('delete-account', {
+        body: { confirmation: 'SUPPRIMER' },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Suppression échouée');
+      }
+
+      const data = response.data as { success?: boolean; error?: string };
+      if (!data?.success) {
+        throw new Error(data?.error || 'Suppression échouée');
+      }
+
+      // Sign out locally after server-side deletion
       await supabase.auth.signOut();
       
       toast({
         title: "Compte supprimé",
-        description: "Votre compte et toutes vos données ont été supprimés.",
+        description: "Votre compte et toutes vos données associées ont été définitivement supprimés.",
       });
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Delete error:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer votre compte.",
+        title: "Erreur de suppression",
+        description: error.message || "Impossible de supprimer votre compte. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
@@ -260,7 +268,7 @@ export default function Profile() {
                 <div className="flex-1">
                   <h3 className="font-medium text-destructive">Supprimer mon compte</h3>
                   <p className="text-sm text-muted-foreground">
-                    Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+                    Cette action est irréversible. Votre compte d'authentification et toutes vos données applicatives seront définitivement supprimés côté serveur.
                   </p>
                 </div>
                 <AlertDialog>
@@ -276,8 +284,9 @@ export default function Profile() {
                         Confirmer la suppression
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cette action est irréversible. Toutes vos données, y compris votre historique de tirages, 
-                        seront définitivement supprimées. Voulez-vous vraiment continuer ?
+                        Cette action est irréversible. Votre compte sera entièrement supprimé côté serveur, 
+                        y compris vos identifiants de connexion, votre profil et tout votre historique de tirages. 
+                        Vous ne pourrez plus vous reconnecter avec cette adresse email. Voulez-vous vraiment continuer ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
