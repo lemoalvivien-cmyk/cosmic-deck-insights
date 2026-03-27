@@ -268,7 +268,7 @@ export default function Profile() {
                 <div className="flex-1">
                   <h3 className="font-medium text-destructive">Supprimer mon compte</h3>
                   <p className="text-sm text-muted-foreground">
-                    Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+                    Cette action est irréversible. Votre compte d'authentification et toutes vos données applicatives seront définitivement supprimés côté serveur.
                   </p>
                 </div>
                 <AlertDialog>
