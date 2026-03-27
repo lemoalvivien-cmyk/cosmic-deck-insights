@@ -67,12 +67,13 @@ export default function Profile() {
         title: "Admin activé",
         description: "Votre compte a été promu administrateur.",
       });
-    } catch (error: any) {
-      console.error('Bootstrap error:', error);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      console.error('Bootstrap error:', err);
       setBootstrapToken('');
       toast({
         title: "Erreur d'activation",
-        description: error.message || "Impossible d'activer le compte admin.",
+        description: err.message || "Impossible d'activer le compte admin.",
         variant: "destructive",
       });
     } finally {
@@ -154,11 +155,12 @@ export default function Profile() {
         description: "Votre compte et toutes vos données associées ont été définitivement supprimés.",
       });
       navigate('/');
-    } catch (error: any) {
-      console.error('Delete error:', error);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      console.error('Delete error:', err);
       toast({
         title: "Erreur de suppression",
-        description: error.message || "Impossible de supprimer votre compte. Veuillez réessayer.",
+        description: err.message || "Impossible de supprimer votre compte. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
