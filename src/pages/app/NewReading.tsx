@@ -268,6 +268,35 @@ export default function NewReading() {
     );
   }
 
+  // No cards available (empty database) — explicit degraded mode
+  if (!cardsLoading && (!cards || cards.length === 0)) {
+    return (
+      <MysticBackground className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-6 p-8 mp-glass rounded-2xl max-w-md mx-4">
+          <div 
+            className="inline-flex items-center justify-center w-16 h-16 rounded-full"
+            style={{ backgroundColor: 'hsl(var(--mp-brand-gold) / 0.15)' }}
+          >
+            <AlertTriangle className="h-8 w-8" style={{ color: 'hsl(var(--mp-brand-gold))' }} />
+          </div>
+          <div className="space-y-2">
+            <h2 className="font-serif text-xl font-semibold text-foreground">
+              Jeu de cartes non configuré
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Les cartes de tarot n'ont pas encore été ajoutées à la base de données. 
+              Un administrateur doit importer le jeu de 78 cartes avant de pouvoir effectuer des tirages.
+            </p>
+          </div>
+          <MysticButton variant="outline" onClick={() => navigate('/app')}>
+            <Home className="mr-2 h-4 w-4" />
+            Retour à l'accueil
+          </MysticButton>
+        </div>
+      </MysticBackground>
+    );
+  }
+
   // AI Loading state - Full screen
   if (aiStatus === 'loading') {
     return (
