@@ -17,20 +17,28 @@ export default function Imprint() {
 
           <section className="space-y-4 mb-8">
             <h2 className="font-serif text-xl font-semibold">1. Éditeur du site</h2>
-            <div className="p-4 bg-muted/50 rounded-lg border border-border">
-              <p className="text-muted-foreground">
-                [Nom de la société ou du particulier]<br />
-                [Adresse]<br />
-                [Code postal, Ville]<br />
-                [Pays]<br />
-                Email : [contact@tarot-divinatoire.com]
+            <div className="p-4 bg-amber-500/10 rounded-lg border border-amber-500/30">
+              <p className="text-sm text-amber-700 dark:text-amber-400 font-medium mb-2">
+                ⚠ Section à compléter
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Les coordonnées de l'éditeur du site doivent être renseignées ici conformément 
+                à l'article 6 de la loi n° 2004-575 du 21 juin 2004 (LCEN). 
+                Cette section sera mise à jour prochainement.
               </p>
             </div>
           </section>
 
           <section className="space-y-4 mb-8">
             <h2 className="font-serif text-xl font-semibold">2. Directeur de la publication</h2>
-            <p className="text-muted-foreground">[Nom du directeur de publication]</p>
+            <div className="p-4 bg-amber-500/10 rounded-lg border border-amber-500/30">
+              <p className="text-sm text-amber-700 dark:text-amber-400 font-medium mb-2">
+                ⚠ Section à compléter
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Le nom du directeur de la publication sera indiqué ici.
+              </p>
+            </div>
           </section>
 
           <section className="space-y-4 mb-8">
@@ -46,7 +54,9 @@ export default function Imprint() {
           <section className="space-y-4 mb-8">
             <h2 className="font-serif text-xl font-semibold">4. Propriété intellectuelle</h2>
             <p className="text-muted-foreground">
-              L'ensemble du contenu est protégé. Toute reproduction non autorisée est interdite.
+              L'ensemble du contenu de ce site (textes, images, graphismes, logo, structure) 
+              est protégé par le droit d'auteur. Toute reproduction, même partielle, 
+              sans autorisation préalable est interdite.
             </p>
           </section>
 

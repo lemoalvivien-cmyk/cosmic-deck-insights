@@ -1,13 +1,24 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowRight, Stars, Moon, Sparkles } from 'lucide-react';
+import { ArrowRight, Stars, Moon, Sparkles, X, User, BookOpen, Star, Home, LogOut } from 'lucide-react';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { MysticBackground, BetaBadge, MysticButton, SiteHeader, SiteFooter } from '@/components/mystic';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const Landing = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const shouldReduceMotion = useReducedMotion();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    setMenuOpen(false);
+    navigate('/');
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
@@ -36,12 +47,130 @@ const Landing = () => {
         ogDescription="Guidance mystique et introspection personnelle. Fait avec le savoir-faire de 30 tarologues professionnels. Essayez gratuitement."
       />
       
-      <SiteHeader />
+      <SiteHeader onMenuClick={() => setMenuOpen(true)} />
+
+      {/* Mobile/Desktop Menu Overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-md"
+          >
+            <div className="container mx-auto px-4">
+              <div className="flex h-16 items-center justify-between">
+                <span className="font-serif text-xl font-semibold text-foreground">Menu</span>
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="p-2 rounded-lg hover:bg-muted transition-colors"
+                  aria-label="Fermer le menu"
+                >
+                  <X className="h-6 w-6 text-foreground" />
+                </button>
+              </div>
+            </div>
+            <nav className="container mx-auto px-4 pt-8">
+              <div className="flex flex-col gap-4">
+                {user ? (
+                  <>
+                    <Link
+                      to="/app"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      <Home className="h-5 w-5" />
+                      Accueil
+                    </Link>
+                    <Link
+                      to="/app/new"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      <Sparkles className="h-5 w-5" />
+                      Nouveau tirage
+                    </Link>
+                    <Link
+                      to="/app/history"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      <BookOpen className="h-5 w-5" />
+                      Journal
+                    </Link>
+                    <Link
+                      to="/app/favorites"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      <Star className="h-5 w-5" />
+                      Favoris
+                    </Link>
+                    <Link
+                      to="/app/profile"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      <User className="h-5 w-5" />
+                      Profil
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 text-lg font-medium text-destructive hover:text-destructive/80 transition-colors py-3"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Déconnexion
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/disclaimer"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      À propos
+                    </Link>
+                    <Link
+                      to="/auth"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-lg font-medium text-foreground hover:text-primary transition-colors py-3 border-b border-border/30"
+                    >
+                      Commencer
+                    </Link>
+                    <Link
+                      to="/legal/terms"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors py-2"
+                    >
+                      CGU
+                    </Link>
+                    <Link
+                      to="/legal/privacy"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors py-2"
+                    >
+                      Confidentialité
+                    </Link>
+                    <Link
+                      to="/legal/imprint"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors py-2"
+                    >
+                      Mentions légales
+                    </Link>
+                  </>
+                )}
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="flex-1 pt-16">
         {/* Hero Section */}
         <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-          {/* Decorative floating elements */}
           <motion.div 
             className="absolute top-24 left-[10%] opacity-40"
             animate={shouldReduceMotion ? {} : { y: [-10, 10, -10] }}
@@ -73,12 +202,10 @@ const Landing = () => {
               initial="hidden"
               animate="visible"
             >
-              {/* Beta Badge */}
               <motion.div variants={fadeInUp} className="flex justify-center">
                 <BetaBadge />
               </motion.div>
 
-              {/* Main Heading */}
               <motion.h1 
                 variants={fadeInUp}
                 className="font-serif text-4xl md:text-6xl lg:text-7xl font-semibold leading-tight text-foreground"
@@ -91,7 +218,6 @@ const Landing = () => {
                 </span>
               </motion.h1>
 
-              {/* Subtitle */}
               <motion.p 
                 variants={fadeInUp}
                 className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
@@ -100,7 +226,6 @@ const Landing = () => {
                 et le savoir-faire d'une trentaine de tarologues professionnels.
               </motion.p>
 
-              {/* CTA Buttons */}
               <motion.div 
                 variants={fadeInUp}
                 className="flex flex-col sm:flex-row gap-4 justify-center pt-6"
