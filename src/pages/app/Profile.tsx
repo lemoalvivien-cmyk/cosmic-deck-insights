@@ -67,12 +67,13 @@ export default function Profile() {
         title: "Admin activé",
         description: "Votre compte a été promu administrateur.",
       });
-    } catch (error: any) {
-      console.error('Bootstrap error:', error);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      console.error('Bootstrap error:', err);
       setBootstrapToken('');
       toast({
         title: "Erreur d'activation",
-        description: error.message || "Impossible d'activer le compte admin.",
+        description: err.message || "Impossible d'activer le compte admin.",
         variant: "destructive",
       });
     } finally {
