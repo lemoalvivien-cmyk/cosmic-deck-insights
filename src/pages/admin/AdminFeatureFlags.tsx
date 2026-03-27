@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 interface FlagConfig {
-  key: 'maintenance_mode' | 'enable_shop' | 'enable_billing' | 'enable_waitlist';
+  key: 'maintenance_mode' | 'enable_waitlist';
   label: string;
   description: string;
   icon: React.ReactNode;
@@ -29,21 +29,9 @@ const FLAGS: FlagConfig[] = [
     dangerous: true,
   },
   {
-    key: 'enable_shop',
-    label: 'Boutique',
-    description: 'Active la boutique en ligne.',
-    icon: <ShoppingBag className="h-5 w-5" />,
-  },
-  {
-    key: 'enable_billing',
-    label: 'Facturation',
-    description: 'Active le système de facturation et abonnements.',
-    icon: <CreditCard className="h-5 w-5" />,
-  },
-  {
     key: 'enable_waitlist',
     label: 'Liste d\'attente',
-    description: 'Active la liste d\'attente pour les nouvelles inscriptions.',
+    description: 'Bloque les nouvelles inscriptions. Les utilisateurs existants peuvent toujours se connecter.',
     icon: <Users className="h-5 w-5" />,
   },
 ];
