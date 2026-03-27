@@ -284,8 +284,9 @@ export default function Profile() {
                         Confirmer la suppression
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cette action est irréversible. Toutes vos données, y compris votre historique de tirages, 
-                        seront définitivement supprimées. Voulez-vous vraiment continuer ?
+                        Cette action est irréversible. Votre compte sera entièrement supprimé côté serveur, 
+                        y compris vos identifiants de connexion, votre profil et tout votre historique de tirages. 
+                        Vous ne pourrez plus vous reconnecter avec cette adresse email. Voulez-vous vraiment continuer ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
