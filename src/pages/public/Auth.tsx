@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePublicConfig } from '@/hooks/usePublicConfig';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight, Clock } from 'lucide-react';
 import { z } from 'zod';
 
 const emailSchema = z.string().email("Email invalide");
@@ -22,19 +23,28 @@ export default function Auth() {
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
   
   const { user, signIn, signUp } = useAuth();
+  const { data: publicConfig } = usePublicConfig();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
 
+  const waitlistActive = publicConfig?.enable_waitlist ?? false;
+
   const from = (location.state as { from?: string })?.from || '/app/onboarding';
 
-  // Redirect authenticated users - after signup/login, session triggers this
+  // Redirect authenticated users
   useEffect(() => {
     if (user) {
-      // Always go to onboarding first - ProtectedRoute will handle if already completed
       navigate('/app/onboarding', { replace: true });
     }
   }, [user, navigate]);
+
+  // If waitlist is active, force login mode
+  useEffect(() => {
+    if (waitlistActive && !isLogin) {
+      setIsLogin(true);
+    }
+  }, [waitlistActive, isLogin]);
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -68,7 +78,6 @@ export default function Auth() {
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) {
-          // Handle leaked password error
           if (error.message.includes('leaked') || error.message.includes('compromised') || error.message.includes('pwned')) {
             toast({
               title: "Mot de passe compromis",
@@ -95,9 +104,18 @@ export default function Auth() {
           });
         }
       } else {
+        // Double-check waitlist before allowing signup
+        if (waitlistActive) {
+          toast({
+            title: "Inscriptions fermées",
+            description: "Les nouvelles inscriptions sont temporairement suspendues.",
+            variant: "destructive",
+          });
+          return;
+        }
+
         const { error } = await signUp(email, password);
         if (error) {
-          // Handle leaked password error on signup
           if (error.message.includes('leaked') || error.message.includes('compromised') || error.message.includes('pwned')) {
             toast({
               title: "Mot de passe compromis",
@@ -150,6 +168,19 @@ export default function Auth() {
             </div>
           </div>
 
+          {/* Waitlist banner — shown when signups are disabled */}
+          {waitlistActive && !isLogin && (
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-center space-y-2">
+              <div className="flex items-center justify-center gap-2 text-amber-700 dark:text-amber-400">
+                <Clock className="h-5 w-5" />
+                <span className="font-medium">Inscriptions temporairement fermées</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Nous accueillons de nouveaux membres progressivement. Revenez bientôt !
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6 p-8 rounded-2xl glass-mystic shadow-soft">
             <div className="space-y-4">
               <div className="space-y-2">
@@ -193,7 +224,7 @@ export default function Auth() {
                 {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
               </div>
 
-              {!isLogin && (
+              {!isLogin && !waitlistActive && (
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
                   <div className="relative">
@@ -213,7 +244,7 @@ export default function Auth() {
               )}
             </div>
 
-            <Button type="submit" className="w-full btn-mystic group" size="lg" disabled={loading}>
+            <Button type="submit" className="w-full btn-mystic group" size="lg" disabled={loading || (!isLogin && waitlistActive)}>
               {loading ? (
                 <span className="flex items-center gap-2">
                   <div className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
@@ -228,16 +259,31 @@ export default function Auth() {
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">
-                {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"}
-              </span>{' '}
-              <button
-                type="button"
-                onClick={() => { setIsLogin(!isLogin); setErrors({}); }}
-                className="text-primary hover:underline font-medium"
-              >
-                {isLogin ? "S'inscrire" : "Se connecter"}
-              </button>
+              {waitlistActive ? (
+                <span className="text-muted-foreground">
+                  Vous avez déjà un compte ?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(true)}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Se connecter
+                  </button>
+                </span>
+              ) : (
+                <>
+                  <span className="text-muted-foreground">
+                    {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"}
+                  </span>{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setIsLogin(!isLogin); setErrors({}); }}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    {isLogin ? "S'inscrire" : "Se connecter"}
+                  </button>
+                </>
+              )}
             </div>
           </form>
 
