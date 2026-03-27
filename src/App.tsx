@@ -10,33 +10,38 @@ import { MaintenanceGuard } from "@/components/layout/MaintenanceGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { validateRoutes, CANONICAL_ROUTES, LEGACY_REDIRECTS } from "@/utils/routeValidator";
 
-// Public Pages
+import { lazy, Suspense } from "react";
+import { LoadingScreen } from "@/components/ui/loading-screen";
+
+// Public Pages — eagerly loaded (landing + auth are entry points)
 import Landing from "./pages/public/Landing";
 import Auth from "./pages/public/Auth";
-import Disclaimer from "./pages/public/Disclaimer";
-import Status from "./pages/public/Status";
-import Privacy from "./pages/legal/Privacy";
-import Terms from "./pages/legal/Terms";
-import Imprint from "./pages/legal/Imprint";
 import NotFound from "./pages/NotFound";
 
-// Protected App Pages
-import Dashboard from "./pages/app/Dashboard";
-import Onboarding from "./pages/app/Onboarding";
-import NewReading from "./pages/app/NewReading";
-import History from "./pages/app/History";
-import Favorites from "./pages/app/Favorites";
-import ReadingDetail from "./pages/app/ReadingDetail";
-import ReadingRedirect from "./pages/app/ReadingRedirect";
-import Profile from "./pages/app/Profile";
+// Public Pages — lazy
+const Disclaimer = lazy(() => import("./pages/public/Disclaimer"));
+const Status = lazy(() => import("./pages/public/Status"));
+const Privacy = lazy(() => import("./pages/legal/Privacy"));
+const Terms = lazy(() => import("./pages/legal/Terms"));
+const Imprint = lazy(() => import("./pages/legal/Imprint"));
 
-// Admin Pages
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminFeatureFlags from "./pages/admin/AdminFeatureFlags";
-import AdminPrompts from "./pages/admin/AdminPrompts";
-import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
-import AdminEdgeTest from "./pages/admin/AdminEdgeTest";
-import AdminCardAssets from "./pages/admin/AdminCardAssets";
+// Protected App Pages — lazy
+const Dashboard = lazy(() => import("./pages/app/Dashboard"));
+const Onboarding = lazy(() => import("./pages/app/Onboarding"));
+const NewReading = lazy(() => import("./pages/app/NewReading"));
+const History = lazy(() => import("./pages/app/History"));
+const Favorites = lazy(() => import("./pages/app/Favorites"));
+const ReadingDetail = lazy(() => import("./pages/app/ReadingDetail"));
+const ReadingRedirect = lazy(() => import("./pages/app/ReadingRedirect"));
+const Profile = lazy(() => import("./pages/app/Profile"));
+
+// Admin Pages — lazy (heavy, rarely visited)
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminFeatureFlags = lazy(() => import("./pages/admin/AdminFeatureFlags"));
+const AdminPrompts = lazy(() => import("./pages/admin/AdminPrompts"));
+const AdminAuditLogs = lazy(() => import("./pages/admin/AdminAuditLogs"));
+const AdminEdgeTest = lazy(() => import("./pages/admin/AdminEdgeTest"));
+const AdminCardAssets = lazy(() => import("./pages/admin/AdminCardAssets"));
 
 const queryClient = new QueryClient();
 

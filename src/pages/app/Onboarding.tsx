@@ -132,12 +132,13 @@ export default function Onboarding() {
       
       // Navigate after a small delay to ensure state propagation
       navigate('/app/dashboard', { replace: true });
-    } catch (error: any) {
-      console.error('[Onboarding] Error completing onboarding:', error);
+    } catch (error: unknown) {
+      const err = error as { code?: string; message?: string };
+      console.error('[Onboarding] Error completing onboarding:', err);
       
       // Show user-friendly error message
       let errorMessage = "Une erreur est survenue. Réessayez.";
-      if (error?.code === '23505') {
+      if (err?.code === '23505') {
         errorMessage = "Profil déjà configuré. Redirection...";
         navigate('/app/dashboard', { replace: true });
         return;

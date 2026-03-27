@@ -267,7 +267,7 @@ export default function ReadingDetail() {
           )}
 
           {/* Fallback Warning Banner */}
-          {reading.ai_interpretation && '_meta' in (reading.ai_interpretation as any) && (
+          {reading.ai_interpretation && typeof reading.ai_interpretation === 'object' && '_meta' in (reading.ai_interpretation as Record<string, unknown>) && (
             <Alert variant="default" className="border-amber-500/50 bg-amber-500/10">
               <AlertTriangle className="h-4 w-4 text-amber-500" />
               <AlertDescription className="text-amber-700 dark:text-amber-300">

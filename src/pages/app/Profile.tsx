@@ -155,11 +155,12 @@ export default function Profile() {
         description: "Votre compte et toutes vos données associées ont été définitivement supprimés.",
       });
       navigate('/');
-    } catch (error: any) {
-      console.error('Delete error:', error);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      console.error('Delete error:', err);
       toast({
         title: "Erreur de suppression",
-        description: error.message || "Impossible de supprimer votre compte. Veuillez réessayer.",
+        description: err.message || "Impossible de supprimer votre compte. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
