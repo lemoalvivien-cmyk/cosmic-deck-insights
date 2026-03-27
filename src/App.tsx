@@ -69,6 +69,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <MaintenanceGuard>
+              <Suspense fallback={<LoadingScreen />}>
               <Routes>
                 {/* ========== PUBLIC ROUTES (ASCII only) ========== */}
                 <Route path="/" element={<Landing />} />
@@ -110,6 +111,7 @@ const App = () => (
                 {/* ========== 404 ========== */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </MaintenanceGuard>
           </BrowserRouter>
         </TooltipProvider>

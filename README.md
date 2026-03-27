@@ -64,6 +64,21 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
+## Release Checklist
+
+Before publishing a new version:
+
+- [ ] `npm run build` passes without errors
+- [ ] `npx eslint src/` returns 0 errors (warnings acceptable)
+- [ ] Secrets configured: `TAROT_API_KEY` or `LOVABLE_API_KEY`, `ADMIN_BOOTSTRAP_EMAIL`, `ADMIN_BOOTSTRAP_TOKEN`
+- [ ] Database seeded: `tarot_spreads` (≥1 row), `tarot_cards` (78 rows), `feature_flags` (1 row)
+- [ ] `/status` page shows all services operational
+- [ ] Auth flow: signup → email confirm → onboarding → dashboard
+- [ ] New reading flow: question → draw → AI interpretation → save
+- [ ] Admin bootstrap: profile → token → admin access
+- [ ] Account deletion: profile → delete → cannot re-login
+- [ ] Legal pages (`/legal/privacy`, `/legal/terms`, `/legal/imprint`) contain real content
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
